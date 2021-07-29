@@ -1,0 +1,8 @@
+Python/.ipynb_checkpoints
+Python/.env
+
+Java/
+Java/.idea
+Java/logs/
+Java/target/
+Java/.env
