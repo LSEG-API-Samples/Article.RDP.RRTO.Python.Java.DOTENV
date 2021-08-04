@@ -10,6 +10,8 @@ if __name__ == '__main__':
     # Load Environment Variables
     load_dotenv()
 
+    print('User: ', os.getenv('USERNAME'))
+
     # Build and Parse Command line arguments for item/universe, which always change.
     my_parser = argparse.ArgumentParser(description='Interested Symbol')
     my_parser.add_argument('-i','--item', type = str, default= 'LSEG.L')
@@ -25,7 +27,7 @@ if __name__ == '__main__':
     base_URL = os.getenv('RDP_BASE_URL')
     auth_endpoint = base_URL + os.getenv('RDP_AUTH_URL') 
 
-     # Get RDP Credentials information from Environment Variables
+    # Get RDP Credentials information from Environment Variables
     username = os.getenv('RDP_USER')
     password = os.getenv('RDP_PASSWORD')
     app_key = os.getenv('RDP_APP_KEY')
@@ -93,4 +95,4 @@ if __name__ == '__main__':
         df=pd.DataFrame(data=dataArray,columns=titles)
         
         if df.empty is False:
-            print(df)
+            print('Top 10 rows data is \n',df.head(10))
