@@ -1,2 +1,5 @@
 .env
 .env.example
+rdp_apis_notebook.ipynb
+images/
+.ipynb_checkpoints/

@@ -148,7 +148,7 @@ password = os.getenv('RDP_PASSWORD')
 app_key = os.getenv('RDP_APP_KEY')
 ```
 
-Next, the application creates the RDP Auth service request message and sends the HTTP Post request message to the RDP APIs endpoint.
+Next, the application creates the RDP Auth service request message and sends the HTTP Post request message to the RDP APIs endpoint based on configurations that we just loaded from the environment.
 
 ```
 import requests
@@ -168,33 +168,25 @@ try:
 except Exception as exp:
     print('Caught exception: %s' % str(exp))
 
-if response.status_code == 200:  # HTTP Status 'OK'
-    print('Authentication success')
-    auth_obj = response.json()
-else:
-    print('RDP authentication result failure: %s %s' % (response.status_code, response.reason))
-    print('Text: %s' % (response.text))
+...
+
 ```
 The next step is requesting ESG (Environmental, Social, and Governance) data from RDP. We use the ESG scores-full API endpoint which provides full coverage of Refinitiv's proprietary ESG Scores with full history for consumers as an example API.
 
-The ESG scores-full API requires the item name (aka universe) information which is most likely to be different for each individual run , so we get this information via a command line argument. 
+The RDP ESG Service API endpoint is also loaded from a ```.env``` file.
 
-```
-import argparse
-
-my_parser = argparse.ArgumentParser(description='Interested Symbol')
-my_parser.add_argument('-i','--item', type = str, default= 'LSEG.L')
-args = my_parser.parse_args()
-
-universe = args.item
-```
-
-We get the RDP ESG Service API endpoint from a ```.env``` file.
 
 ```
 # Get RDP Token service information from Environment Variables
 esg_url = base_URL + os.getenv('RDP_ESG_URL') 
 
+import argparse
+
+my_parser = argparse.ArgumentParser(description='Interested Symbol')
+my_parser.add_argument('-i','--item', type = str, default= 'TSLA.O')
+args = my_parser.parse_args()
+
+universe = args.item
 payload = {'universe': universe}
 esg_object = None
 
@@ -204,9 +196,24 @@ try:
 except Exception as exp:
     print('Caught exception: %s' % str(exp))
 ```
-Then we can get the ESG data from the ```response.json()``` statement for further data processing.
+The above code shows that you do not need to change the code if the RDP credentials or service endpoint is changed (example update the API version). We can just update the configurations in a ```.env``` file (or System environment variables) and re-run the application.
 
-The above code shows that you do not need to change the code if the RDP credentials or service endpoint is changed (example update API version). We can just update the configurations in a ```.env``` file and re-run the application.
+You may noticed that the application gets the item name (aka universe) via a command line argument instead of a ```.env``` file. The reasons is this parameter is most likely to be different for each individual run, so we use the command line argument to get the parameter. The information such as credentials and API endpoints are changed only when we change the environment, re-deployment the application, or run a specific scenario. The environment variables are more suitable to store these configurations than the command line arguments.  
+
+## dotenv with Jupyter Notebook/JupyterLab
+
+The python-dotenv library also supports the IPython environment such as the classic Jupyter Notebook and JupyterLab applications. The notebook application just needs to import  python-dotenv library and run following IPython Magic statements. 
+
+```
+%load_ext dotenv
+
+# Use find_dotenv to locate the file
+%dotenv
+```
+By default, it will use find_dotenv to search for a .env file in a current directory location. Please note that the OS/System's environment variables always override ```.env``` configurations by default as well.
+
+![Figure-2](images/02_notebook_dotenv.png "Notebook dotenv") 
+
 
 ## <a id="references"></a>References
 For further details, please check out the following resources:

@@ -14,7 +14,7 @@ if __name__ == '__main__':
 
     # Build and Parse Command line arguments for item/universe, which always change.
     my_parser = argparse.ArgumentParser(description='Interested Symbol')
-    my_parser.add_argument('-i','--item', type = str, default= 'LSEG.L')
+    my_parser.add_argument('-i','--item', type = str, default= 'TSLA.O')
     args = my_parser.parse_args()
 
     universe = args.item
