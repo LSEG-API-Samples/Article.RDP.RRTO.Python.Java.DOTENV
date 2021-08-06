@@ -1,0 +1,6 @@
+target/
+logs/
+.env
+.idea/
+README.md
+.env.example
