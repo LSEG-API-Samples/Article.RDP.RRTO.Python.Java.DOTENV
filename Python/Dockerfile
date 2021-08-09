@@ -11,16 +11,14 @@ RUN pip install --user -r requirements.txt
 FROM python:3.8.11-slim
 WORKDIR /app
 
-# Set Python buffer to make Docker print every messages instantly.
-ENV PYTHONUNBUFFERED=1
+# Update PATH environment variable + set Python buffer to make Docker print every messages instantly.
+ENV PATH=/root/.local:$PATH \
+    USERNAME=DOCKER_CONTAINER \
+    PYTHONUNBUFFERED=1
 
 # copy only the dependencies installation from the 1st stage image
 COPY --from=builder /root/.local /root/.local
 COPY rdp_apis_console.py .
-
-# update PATH environment variable
-ENV PATH=/root/.local:$PATH
-ENV USERNAME=DOCKER_CONTAINER
 
 #Run Python
 ENTRYPOINT [ "python", "./rdp_apis_console.py" ]

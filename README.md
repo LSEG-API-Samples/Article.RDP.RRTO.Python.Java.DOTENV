@@ -60,7 +60,7 @@ Please note that you *do not* need the ```""``` or ```''``` characters for a str
 
 ### Caution
 
-You *should not* share this ```.env``` file to your peers or commit/push it to the version control. You should add the file to the ```.gitignore``` file to avoid adding it to a version control or public repo accidentally.
+You *should not* share this ```.env``` file to your peers or commit/push it to the version control. You should add the file to the ```.gitignore``` file to avoid adding it to a version control or public repository accidentally.
 
 You can create a ```.env.example``` file as a template for environment variables and ```.env``` file sharing. The file has the same parameters' keys as a ```.env``` file but without sensitive values as the following example:
 
@@ -115,7 +115,7 @@ RDP_PASSWORD=<Your RDP password>
 RDP_APP_KEY=<Your RDP appkey>
 
 # RDP Core Endpoints
-RDP_BASE_URL = https://api.refinitiv.com
+RDP_BASE_URL=https://api.refinitiv.com
 RDP_AUTH_URL=/auth/oauth2/v1/token
 RDP_ESG_URL=/data/environmental-social-governance/v2/views/scores-full
 ```
@@ -249,7 +249,7 @@ RTO_PASSWORD=<Your RTO password>
 RTO_APP_KEY=<Your RTO appkey>
 
 # RDP-RTO Core Endpoints
-RDP_BASE_URL = https://api.refinitiv.com
+RDP_BASE_URL=https://api.refinitiv.com
 RDP_AUTH_URL=/auth/oauth2/v1/token
 RDP_DISCOVERY_URL=/streaming/pricing/v1/
 RTO_WS_PORT=443
@@ -287,6 +287,76 @@ discoveryUrl = baseUrl + dotenv.get("RDP_DISCOVERY_URL");
 ```
 Next, the application uses those configurations to authenticate with RDP Auth Service, get the RTO WebSocket endpoint dynamically from the Service Discovery mechanism and further connects and consume the real-time streaming data from the WebSocket server.
 
+## dotenv with Docker
+
+[Docker](https://www.docker.com/) supports the environment variables usage in the [Dockerfile](https://docs.docker.com/engine/reference/builder/#env), [docker run command](https://docs.docker.com/engine/reference/commandline/run/) and [Docker compose](https://docs.docker.com/compose/environment-variables/). 
+
+### dotenv with Dockerfile
+
+#### Dockerfile ENV instruction
+
+Let's demonstrate with the Dockerfile first. You can use the ```ENV``` instruction to set the environment variable in the image. 
+
+```
+ENV <key>=<value> ...
+```
+You can set multiple environment variables in a single ```ENV``` instruction as well.
+
+```
+ENV <key>=<value> \
+    <key>=<value> \
+    <key>=<value>
+```
+
+The Dockerfile below set both application and System's configurations in the Dockerfile. 
+
+```
+# Update PATH environment variable + set Python buffer to make Docker print every messages instantly.
+ENV PATH=/root/.local:$PATH \
+    USERNAME=DOCKER_CONTAINER \
+    PYTHONUNBUFFERED=1
+```
+All containers from the result image can access the environment variables set using Dockerfile ```ENV``` instruction, unless it is replaced by the Docker run command options. 
+
+When you run the Docker containers from the above Docker image setting, the ```System.out.println(dotenv.get("USERNAME"));``` (Java) and ``` print('User: ', os.getenv('USERNAME'))``` (Python) will print the USERNAME information as *DOCKER_CONTAINER*.
+
+#### Docker Run command
+
+You can use the ```--env``` (```-e``` for shorter syntax) options with the Docker run command to set the environment variable of the container.  
+
+```
+$> docker run --env <key>=<value> IMAGE
+```
+
+Please note that if you want to set multiple environment variables, you need to set ```--env```` multiple times
+
+```
+$> docker run --env USERNAME=DOCKER_CONTAINER_RUN --env RDP_USER=USER1 --env RDP_PASSWORD=PASSWORD --env RDP_APP_KEY=APP_KEY IMAGE
+```
+Alternatively, you can use the ```--env-file``` option to parse a file of environment variables (```.env``` file) to Docker container. 
+
+```
+$> docker run --env-file .env IMAGE
+```
+
+Example for the Python RDP application:
+
+```
+$>Python> docker build . -t python_rdp
+...
+$>Python> docker run --env-file .env --name python_console python_rdp
+```
+
+Example for the Java RTO WebSocket application:
+
+```
+$>Java> docker build . -t java_rto
+...
+$>Java> docker run --env-file .env --name java_websocket java_rto
+```
+#### Caution
+
+You *should add* ```.env``` (and ```.env.example````) file to the ```.dockerignore``` file to avoid adding it to a public Docker Hub repository.
 
 
 ## <a id="references"></a>References
