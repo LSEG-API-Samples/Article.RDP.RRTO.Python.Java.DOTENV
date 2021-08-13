@@ -6,9 +6,9 @@ How to separate your credentials, secrets, and configurations from your source c
 
 ## <a id="intro"></a>Introduction
 
-As a modern application, your application always deals with credentials, secrets, and configurations to connect to other services like an Authentication service, Database, Cloud services, Microservices, etc. It is not a good idea to keep your username, password and other credentials in your application source code as your credentials may leak when you share or publish the application. You need to delete or remark those credentials before you share the code which adds extra work for you. And eventually, you may forget to do it. You may pass the credentials information to the application via the command line arguments, but someone may see the information on your screen as well.
+As a modern application, your application always deals with credentials, secrets, and configurations to connect to other services like an Authentication service, Database, Cloud services, Microservices, etc. It is not a good idea to keep your username, password and other credentials in your application source code as your credentials may leak when you share or publish the application. You need to delete or remark those credentials before you share the code which adds extra work for you. And eventually, you may forget to do it. You may pass the credentials to the application via the command line arguments, but someone may see those credentials on your screen as well.
 
-The services configurations such as API endpoint, Database URL should not be hard coded in the source code too. The reason is every time you change or update the configurations you need to modify the code which may lead to more errors. 
+The services configurations such as API endpoint, Database URL, etc should not be hard coded in the source code too. The reason is every time you change or update the configurations you need to modify the code which may lead to more errors. 
 
 How should we solve this issue?
 
