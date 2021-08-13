@@ -39,7 +39,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
-
+// Importing java-dotenv package
 import io.github.cdimascio.dotenv.Dotenv;
 
 /*
@@ -340,27 +340,33 @@ public class MarketPriceRdpGwServiceDiscovery {
         }
     }
 
+    /**
+     *  Loading RTO credentials and API Endpoint configurations from system environment variables and .env file
+     */
     static void readDotENV(){
+        // Populate configurations from the system environment variables and .env file
         Dotenv dotenv = Dotenv.configure().ignoreIfMissing().ignoreIfMalformed().load();
-        System.out.println(dotenv.get("USERNAME"));
+        System.out.println(dotenv.get("USERNAME")); //Get system configuration
+        //Get RTO credentials
         user = dotenv.get("RTO_USER");
         password = dotenv.get("RTO_PASSWORD");
         clientid = dotenv.get("RTO_APP_KEY");
-
-        port = dotenv.get("RTO_WS_PORT");
         newPassword = dotenv.get("RTO_WS_NEW_PASSWORD");
-
+        //Get RTO Endpoints
         String baseUrl =  dotenv.get("RDP_BASE_URL");
         authUrl = baseUrl + dotenv.get("RDP_AUTH_URL");
         discoveryUrl = baseUrl + dotenv.get("RDP_DISCOVERY_URL");
+
+        port = dotenv.get("RTO_WS_PORT");
     }
 
     public static void main(String[] args) {
 
+        // Read configurations from system environment variables and .env file
         readDotENV();
 
+        // Build command line arguments parser
         Options options = new Options();
-
 
         options.addOption(Option.builder().longOpt("app_id").hasArg().desc("app_id").build());
         options.addOption(Option.builder().longOpt("position").hasArg().desc("position").build());
