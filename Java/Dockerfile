@@ -7,7 +7,7 @@ RUN mvn -e -B dependency:resolve
 COPY src ./src
 # Build and compile application
 #RUN mvn clean -e -B package
-RUN mvn clean -e -B compile assembly:single
+RUN mvn clean -e -B package
 
 # Run stage
 FROM openjdk:11-jre-slim

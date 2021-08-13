@@ -11,7 +11,7 @@ RUN pip install --user -r requirements.txt
 FROM python:3.8.11-slim
 WORKDIR /app
 
-# Update PATH environment variable + set Python buffer to make Docker print every messages instantly.
+# Update PATH environment variable + set Python buffer to make Docker print every message instantly.
 ENV PATH=/root/.local:$PATH \
     USERNAME=DOCKER_CONTAINER \
     PYTHONUNBUFFERED=1

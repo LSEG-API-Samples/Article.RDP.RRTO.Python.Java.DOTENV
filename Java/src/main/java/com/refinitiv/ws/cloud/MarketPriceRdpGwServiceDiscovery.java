@@ -80,7 +80,7 @@ public class MarketPriceRdpGwServiceDiscovery {
     public static String newPassword = "";
     public static String authUrl = "";
     public static String discoveryUrl = "";
-    public static String ric = "/TRI.N";
+    public static String ric = "/EUR=";
     public static String service = "ELEKTRON_DD";
     public static String scope = "trapi";
     public static JSONObject authJson = null;
