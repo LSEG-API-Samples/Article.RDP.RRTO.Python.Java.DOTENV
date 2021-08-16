@@ -1,4 +1,4 @@
-How to separate your credentials, secrets, and configurations from your source code with environment variables
+# How to separate your credentials, secrets, and configurations from your source code with environment variables
 - version: 1.0
 - Last update: Aug 2021
 - Environment: Windows
@@ -14,7 +14,7 @@ How should we solve this issue?
 
 ## <a id="12factor_config"></a>Store config in the environment
 
-The [Twelve-Factor App methodology](https://12factor.net/) which is one of the most influential patterns to designing scalable software-as-a-service application. The methodology [3rd factor](https://12factor.net/config) (aka Config principle) states that configuration information should be kept as environment variables and injected into the application on runtime as the following quotes:
+The [Twelve-Factor App methodology](https://12factor.net/) is one of the most influential patterns to designing scalable software-as-a-service applications. The methodology [3rd factor](https://12factor.net/config) (aka Config principle) states that configuration information should be kept as environment variables and injected into the application on runtime as the following quotes:
 
 >An app’s config is everything that is likely to vary between deploys (staging, production, developer environments, etc). This includes:
 >- Resource handles to the database, Memcached, and other backing services
@@ -216,11 +216,11 @@ By default, it will use find_dotenv to search for a .env file in a current direc
 
 ## <a id="dotenv_java"></a>dotenv with Java
 
-The next section demonstrates with the [dotenv-java](https://github.com/cdimascio/dotenv-java) library. The example Java console application uses the library to store the Refinitiv Real-Time - Optimized (RTO) credentials and configurations for the application.
+The next section demonstrates the [dotenv-java](https://github.com/cdimascio/dotenv-java) library. The example Java console application uses the library to store the Refinitiv Real-Time - Optimized (RTO) credentials and configurations for the application.
 
 ### <a id="whatis_rto"></a>What is Refinitiv Real-Time - Optimized?
 
-As part of the Refinitiv Data Platform, [Refinitiv Real-Time - Optimized](https://developers.refinitiv.com/en/api-catalog/elektron/refinitiv-websocket-api/quick-start#connecting-to-refinitiv-real-time-optimized) (formerly known as ERT in Cloud) gives you access to best in class Real Time market data delivered in the cloud.  Refinitiv Real-Time - Optimized is a new delivery mechanism for RDP, using the AWS (Amazon Web Services) cloud. Once a connection to RDP is established using Refinitiv Real-Time - Optimized, data can be retrieved using [Websocket API for Pricing Streaming and Real-Time Services](https://developers.refinitiv.com/en/api-catalog/elektron/refinitiv-websocket-api) aka WebSocket API.
+As part of the Refinitiv Data Platform, [Refinitiv Real-Time - Optimized](https://developers.refinitiv.com/en/api-catalog/elektron/refinitiv-websocket-api/quick-start#connecting-to-refinitiv-real-time-optimized) (formerly known as ERT in Cloud) gives you access to best in class Real-Time market data delivered in the cloud.  Refinitiv Real-Time - Optimized is a new delivery mechanism for RDP, using the AWS (Amazon Web Services) cloud. Once a connection to RDP is established using Refinitiv Real-Time - Optimized, data can be retrieved using [Websocket API for Pricing Streaming and Real-Time Services](https://developers.refinitiv.com/en/api-catalog/elektron/refinitiv-websocket-api) aka WebSocket API.
 
 For more detail regarding Refinitiv Real-Time - Optimized, please see the following APIs resources: 
 - [WebSocket API Quick Start](https://developers.refinitiv.com/en/api-catalog/refinitiv-real-time-opnsrc/refinitiv-websocket-api/quick-start#connecting-to-refinitiv-real-time-optimized) page.
@@ -287,7 +287,7 @@ String baseUrl =  dotenv.get("RDP_BASE_URL");
 authUrl = baseUrl + dotenv.get("RDP_AUTH_URL");
 discoveryUrl = baseUrl + dotenv.get("RDP_DISCOVERY_URL");
 ```
-Next, the application uses those configurations to authenticate with RDP Auth Service, get the RTO WebSocket endpoint dynamically from the Service Discovery mechanism and further connects and consume the real-time streaming data from the WebSocket server.
+Next, the application uses those configurations to authenticate with the RDP Auth Service, get the RTO WebSocket endpoint dynamically from the Service Discovery mechanism and further connects and consume the real-time streaming data from the WebSocket server.
 
 ## <a id="dotenv_docker"></a>Using Environment Variables with Docker
 
@@ -319,19 +319,21 @@ ENV PATH=/root/.local:$PATH \
 ```
 All containers from the resulting image can access the environment variables set using Dockerfile ```ENV``` instruction, unless it is replaced by the Docker run command options. 
 
-When you run the Docker containers from the above Docker image setting, the ```system.out.println(dotenv.get("USERNAME"));``` (Java) and ``` print('User: ', os.getenv('USERNAME'))``` (Python) will print the USERNAME information as *DOCKER_CONTAINER*.
+When you run the Docker containers from the above Docker image setting, the ```system.out.println(dotenv.get("USERNAME"));``` (Java) and ```print('User: ', os.getenv('USERNAME'))``` (Python) will print the USERNAME information as *DOCKER_CONTAINER*.
 
 ### <a id="docker_using"></a>Environment Variables with Docker Run command
 
-You can use the ```--env``` (```-e``` for shorter syntax) options with the Docker run command to set the environment variable of the container.  
+You can use the ```--env``` (```-e``` for a shorter syntax) options with the Docker run command to set the environment variable of the container. The example with the Python RDP console container is the following:
 
 ```
 docker run --env <key>=<value> IMAGE
 ```
 
-Please note that if you want to set multiple environment variables, you need to set ```--env```` multiple times
+Please note that if you want to set multiple environment variables, you need to set ```--env``` multiple times
 
 ```
+docker build . -t python_rdp
+...
 docker run --env USERNAME=DOCKER_CONTAINER_RUN --env RDP_USER=USER1 --env RDP_PASSWORD=PASSWORD --env RDP_APP_KEY=APP_KEY IMAGE
 ```
 Alternatively, you can use the ```--env-file``` option to parse a file of environment variables (```.env``` file) to a Docker container. 
@@ -356,7 +358,7 @@ docker build . -t java_rto
 docker run --env-file .env --name java_websocket java_rto
 ```
 
-Please note that the ```ENV``` instruction, ```--env``` and ```--env-file``` options support the normal system environment variables, you do not need to use the dotenv library with Docker.  
+Please note that the ```ENV``` instruction, ```--env``` and ```--env-file``` options support the normal system environment variables too. The dotenv library is not required to be used with Docker.  
 
 #### Caution
 
