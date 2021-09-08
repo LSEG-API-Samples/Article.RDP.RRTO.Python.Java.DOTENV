@@ -332,7 +332,7 @@ docker run --env <key>=<value> IMAGE
 Please note that if you want to set multiple environment variables, you need to set ```--env``` multiple times
 
 ```
-docker build . -t python_rdp
+docker build . -t IMAGE
 ...
 docker run --env USERNAME=DOCKER_CONTAINER_RUN --env RDP_USER=USER1 --env RDP_PASSWORD=PASSWORD --env RDP_APP_KEY=APP_KEY IMAGE
 ```
