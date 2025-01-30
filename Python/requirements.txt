@@ -1,5 +1,5 @@
 asttokens==2.0.5
-certifi==2021.5.30
+certifi==2024.7.4
 charset-normalizer==2.0.3
 colorama==0.4.4
 cycler==0.10.0
