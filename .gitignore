@@ -1,6 +1,8 @@
 Python/.ipynb_checkpoints
 Python/.env
 Python/jupyterlab_ESG_Screener_RDP_Search.ipynb
+Python/dotenvenv/
+Python/notebookenv/
 
 
 Java/.idea

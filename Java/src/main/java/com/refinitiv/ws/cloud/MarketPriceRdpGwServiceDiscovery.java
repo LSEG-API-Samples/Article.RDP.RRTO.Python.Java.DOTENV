@@ -2,7 +2,7 @@
 //|            This source code is provided under the Apache 2.0 license      --
 //|  and is provided AS IS with no warranty or guarantee of fit for purpose.  --
 //|                See the project's LICENSE.md for details.                  --
-//|            Copyright (C) 2018-2021 Refinitiv. All rights reserved.        --
+//|            Copyright (C) 2018-2025 LSEG. All rights reserved.             --
 //|-----------------------------------------------------------------------------
 
 package com.refinitiv.ws.cloud;
@@ -43,9 +43,9 @@ import org.apache.http.util.EntityUtils;
 import io.github.cdimascio.dotenv.Dotenv;
 
 /*
- * This example demonstrates authenticating via Refinitiv Data Platform, using an
- * authentication token to discover Refinitiv Real-Time service endpoint, and
- * using the endpoint and authentitcation to retrieve market content.
+ * This example demonstrates authenticating via Delivery Platform (RDP), using an
+ * authentication token to discover the Real-Time service endpoint, and
+ * using the endpoint and authentication to retrieve market content.
  *
  * This example maintains a session by proactively renewing the authentication
  * token before expiration.
@@ -56,16 +56,16 @@ import io.github.cdimascio.dotenv.Dotenv;
  * each of the hosts.
  *
  * It performs the following steps:
- * - Authenticating via HTTP Post request to Refinitiv Data Platform
+ * - Authenticating via HTTP Post request to Delivery Platform (RDP)
  * - Retrieving service endpoints from Service Discovery via HTTP Get request,
- *   using the token retrieved from Refinitiv Data Platform
+ *   using the token retrieved from RDP
  * - Opening a WebSocket (or two, if the --hotstandby option is specified) to
- *   a Refinitiv Real-Time Service endpoint, as retrieved from Service Discovery
+ *   a Real-Time Service endpoint, as retrieved from Service Discovery
  * - Sending Login into the Real-Time Service using the token retrieved
- *   from Refinitiv Data Platform.
+ *   from RDP.
  * - Requesting market-price content.
  * - Printing the response content.
- * - Periodically proactively re-authenticating to Refinitiv Data Platform, and
+ * - Periodically proactively re-authenticating to RDP, and
  *   providing the updated token to the Real-Time endpoint before token expiration.
  */
 
@@ -458,7 +458,7 @@ public class MarketPriceRdpGwServiceDiscovery {
         }
         try {
 
-            // Connect to Refinitiv Data Platform and authenticate (using our username and password)
+            // Connect to RDP and authenticate (using our username and password)
             authJson = getAuthenticationInfo(null);
             if (authJson == null)
                 System.exit(1);
@@ -536,7 +536,7 @@ public class MarketPriceRdpGwServiceDiscovery {
                 // Continue using current token until 90% of initial time before it expires.
                 Thread.sleep(expireTime * 900);  // The value 900 means 90% of expireTime in milliseconds
 
-                // Connect to Refinitiv Data Platform and re-authenticate, using the refresh token provided in the previous response
+                // Connect to RDP and re-authenticate, using the refresh token provided in the previous response
                 authJson = getAuthenticationInfo(authJson);
                 if (authJson == null)
                     System.exit(1);
@@ -697,7 +697,7 @@ public class MarketPriceRdpGwServiceDiscovery {
 
 
     /**
-     * Authenticate to Refinitiv Data Platform via an HTTP post request.
+     * Authenticate to RDP via an HTTP post request.
      * Initially authenticates using the specified password. If information from a previous authentication response is provided, it instead authenticates using
      * the refresh token from that response. Uses authUrl as url.
      * @param previousAuthResponseJson Information from a previous authentication, if available
@@ -709,7 +709,7 @@ public class MarketPriceRdpGwServiceDiscovery {
     }
 
     /**
-     * Authenticate to Refinitiv Data Platform via an HTTP post request.
+     * Authenticate to RDP via an HTTP post request.
      * Initially authenticates using the specified password. If information from a previous authentication response is provided, it instead authenticates using
      * the refresh token from that response.
      * @param previousAuthResponseJson Information from a previous authentication, if available
@@ -763,7 +763,7 @@ public class MarketPriceRdpGwServiceDiscovery {
                 case HttpStatus.SC_OK:                  // 200
                     // Authentication was successful. Deserialize the response and return it.
                     JSONObject responseJson = new JSONObject(EntityUtils.toString(response.getEntity()));
-                    System.out.println("Refinitiv Data Platform Authentication succeeded. RECEIVED:");
+                    System.out.println("RDP Authentication succeeded. RECEIVED:");
                     System.out.println(responseJson.toString(2));
                     return responseJson;
                 case HttpStatus.SC_MOVED_PERMANENTLY:              // 301
@@ -771,7 +771,7 @@ public class MarketPriceRdpGwServiceDiscovery {
                 case HttpStatus.SC_TEMPORARY_REDIRECT:             // 307
                 case 308:                                          // 308 HttpStatus.SC_PERMANENT_REDIRECT
                     // Perform URL redirect
-                    System.out.println("Refinitiv Data Platform authentication HTTP code: " + response.getStatusLine().getStatusCode() + " " + response.getStatusLine().getReasonPhrase());
+                    System.out.println("RDP authentication HTTP code: " + response.getStatusLine().getStatusCode() + " " + response.getStatusLine().getReasonPhrase());
                     Header header = response.getFirstHeader("Location");
                     if( header != null )
                     {
@@ -786,7 +786,7 @@ public class MarketPriceRdpGwServiceDiscovery {
                 case HttpStatus.SC_BAD_REQUEST:                    // 400
                 case HttpStatus.SC_UNAUTHORIZED:                   // 401
                     // Retry with username and password
-                    System.out.println("Refinitiv Data Platform authentication HTTP code: " + response.getStatusLine().getStatusCode() + " " + response.getStatusLine().getReasonPhrase());
+                    System.out.println("RDP authentication HTTP code: " + response.getStatusLine().getStatusCode() + " " + response.getStatusLine().getReasonPhrase());
                     if (previousAuthResponseJson != null)
                     {
                         System.out.println("Retry with username and password");
@@ -796,17 +796,17 @@ public class MarketPriceRdpGwServiceDiscovery {
                 case HttpStatus.SC_FORBIDDEN:                      // 403
                 case 451:                                          // 451 Unavailable For Legal Reasons
                     // Stop retrying with the request
-                    System.out.println("Refinitiv Data Platform authentication HTTP code: " + response.getStatusLine().getStatusCode() + " " + response.getStatusLine().getReasonPhrase());
+                    System.out.println("RDP authentication HTTP code: " + response.getStatusLine().getStatusCode() + " " + response.getStatusLine().getReasonPhrase());
                     System.out.println("Stop retrying with the request");
                     return null;
                 default:
-                    // Retry the request to Refinitiv Data Platform
-                    System.out.println("Refinitiv Data Platform authentication HTTP code: " + response.getStatusLine().getStatusCode() + " " + response.getStatusLine().getReasonPhrase());
-                    System.out.println("Retry the request to Refinitiv Data Platform");
+                    // Retry the request to RDP
+                    System.out.println("RDP authentication HTTP code: " + response.getStatusLine().getStatusCode() + " " + response.getStatusLine().getReasonPhrase());
+                    System.out.println("Retry the request to RDP");
                     return getAuthenticationInfo(previousAuthResponseJson);
             }
         } catch (Exception e) {
-            System.out.println("Refinitiv Data Platform authentication failure:");
+            System.out.println("RDP authentication failure:");
             e.printStackTrace();
             return null;
         }
@@ -855,7 +855,7 @@ public class MarketPriceRdpGwServiceDiscovery {
                 case HttpStatus.SC_OK:                             // 200
                     // Service discovery was successful. Deserialize the response and return it.
                     JSONObject responseJson = new JSONObject(EntityUtils.toString(response.getEntity()));
-                    System.out.println("Refinitiv Data Platform service discovery succeeded. RECEIVED:");
+                    System.out.println("RDP service discovery succeeded. RECEIVED:");
                     System.out.println(responseJson.toString(2));
                     return responseJson;
                 case HttpStatus.SC_MOVED_PERMANENTLY:              // 301
@@ -864,7 +864,7 @@ public class MarketPriceRdpGwServiceDiscovery {
                 case HttpStatus.SC_TEMPORARY_REDIRECT:             // 307
                 case 308:                                          // 308 HttpStatus.SC_PERMANENT_REDIRECT
                     // Perform URL redirect
-                    System.out.println("Refinitiv Data Platform service discovery HTTP code: " + response.getStatusLine().getStatusCode() + " " + response.getStatusLine().getReasonPhrase());
+                    System.out.println("RDP service discovery HTTP code: " + response.getStatusLine().getStatusCode() + " " + response.getStatusLine().getReasonPhrase());
                     Header header = response.getFirstHeader("Location");
                     if( header != null )
                     {
@@ -879,17 +879,17 @@ public class MarketPriceRdpGwServiceDiscovery {
                 case HttpStatus.SC_FORBIDDEN:                      // 403
                 case 451:                                          // 451 Unavailable For Legal Reasons
                     // Stop retrying with the request
-                    System.out.println(" Refinitiv Data Platform service discovery HTTP code: " + response.getStatusLine().getStatusCode() + " " + response.getStatusLine().getReasonPhrase());
+                    System.out.println("RDP service discovery HTTP code: " + response.getStatusLine().getStatusCode() + " " + response.getStatusLine().getReasonPhrase());
                     System.out.println("Stop retrying with the request");
                     return null;
                 default:
                     // Retry the service discovery request
-                    System.out.println("Refinitiv Data Platform service discovery HTTP code: " + response.getStatusLine().getStatusCode() + " " + response.getStatusLine().getReasonPhrase());
+                    System.out.println("RDP service discovery HTTP code: " + response.getStatusLine().getStatusCode() + " " + response.getStatusLine().getReasonPhrase());
                     System.out.println("Retry the service discovery request");
                     return queryServiceDiscovery();
             }
         } catch (Exception e) {
-            System.out.println("Refinitiv Data Platform service discovery failure:");
+            System.out.println("RDP service discovery failure:");
             e.printStackTrace();
             return null;
         }

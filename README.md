@@ -1,6 +1,6 @@
 # How to separate your credentials, secrets, and configurations from your source code with environment variables
-- version: 1.0
-- Last update: Aug 2021
+- version: 2.0
+- Last update: January 2025
 - Environment: Windows
 - Prerequisite: [Access to RDP or RTO credentials](#prerequisite)
 
@@ -48,7 +48,7 @@ The dotenv method lets the application loads variables from a ```.env``` file in
 
 The ```.env``` file is a simple text file locates at the root of the project with a key-value pair setting as the following:
 
-```
+``` ini
 # DB
 DB_USER=User
 DB_PASSWORD=MyPassword
@@ -64,7 +64,7 @@ You *should not* share this ```.env``` file to your peers or commit/push it to t
 
 You can create a ```.env.example``` file as a template for environment variables and ```.env``` file sharing. The file has the same parameters' keys as a ```.env``` file but without sensitive values as the following example:
 
-```
+``` ini
 # DB
 DB_USER=
 DB_PASSWORD=
@@ -78,13 +78,13 @@ Please note that if the configuration is not sensitive information (such as a pu
 
 ## <a id="dotenv_python"></a>dotenv with Python
 
-Let's demonstrate with the [python-dotenv](https://github.com/theskumar/python-dotenv) library first. The example console application uses the library to store the [Refinitiv Data Platform (RDP) APIs](https://developers.refinitiv.com/en/api-catalog/refinitiv-data-platform/refinitiv-data-platform-apis) credentials and configurations for the application.
+Let's demonstrate with the [python-dotenv](https://github.com/theskumar/python-dotenv) library first. The example console application uses the library to store the [Delivery Platform (RDP) APIs](https://developers.lseg.com/en/api-catalog/refinitiv-data-platform/refinitiv-data-platform-apis) (formerly known as Refinitiv Data Platform) credentials and configurations for the application.
 
-### <a id="whatis_rdp"></a>What is Refinitiv Data Platform (RDP) APIs?
+### <a id="whatis_rdp"></a>What is Delivery Platform (RDP) APIs?
 
-The [Refinitiv Data Platform (RDP) APIs](https://developers.refinitiv.com/en/api-catalog/refinitiv-data-platform/refinitiv-data-platform-apis) provide various Refinitiv data and content for developers via easy to use Web-based API.
+The [Delivery Platform Platform (RDP) APIs](https://developers.lseg.com/en/api-catalog/refinitiv-data-platform/refinitiv-data-platform-apis) (formerly known as Refinitiv Data Platform) provide various LSEG data and content for developers via easy to use Web-based API.
 
-RDP APIs give developers seamless and holistic access to all of the Refinitiv content such as Historical Pricing, Environmental Social and Governance (ESG), News, Research, etc and commingled with their content, enriching, integrating, and distributing the data through a single interface, delivered wherever they need it.  The RDP APIs delivery mechanisms are the following:
+RDP APIs give developers seamless and holistic access to all of the LSEG content such as Historical Pricing, Environmental Social and Governance (ESG), News, Research, etc and commingled with their content, enriching, integrating, and distributing the data through a single interface, delivered wherever they need it.  The RDP APIs delivery mechanisms are the following:
 * Request - Response: RESTful web service (HTTP GET, POST, PUT or DELETE) 
 * Alert: delivery is a mechanism to receive asynchronous updates (alerts) to a subscription. 
 * Bulks:  deliver substantial payloads, like the end-of-day pricing data for the whole venue. 
@@ -92,23 +92,24 @@ RDP APIs give developers seamless and holistic access to all of the Refinitiv co
 
 This example project is focusing on the Request-Response: RESTful web service delivery method only.  
 
-For more detail regarding Refinitiv Data Platform, please see the following APIs resources: 
-- [Quick Start](https://developers.refinitiv.com/en/api-catalog/refinitiv-data-platform/refinitiv-data-platform-apis/quick-start) page.
-- [Tutorials](https://developers.refinitiv.com/en/api-catalog/refinitiv-data-platform/refinitiv-data-platform-apis/tutorials) page.
-- [RDP APIs: Introduction to the Request-Response API](https://developers.refinitiv.com/en/api-catalog/refinitiv-data-platform/refinitiv-data-platform-apis/tutorials#introduction-to-the-request-response-api) page.
-- [RDP APIs: Authorization - All about tokens](https://developers.refinitiv.com/en/api-catalog/refinitiv-data-platform/refinitiv-data-platform-apis/tutorials#authorization-all-about-tokens) page.
+For more detail regarding Delivery Platform, please see the following APIs resources: 
+- [Quick Start](https://developers.lseg.com/en/api-catalog/refinitiv-data-platform/refinitiv-data-platform-apis/quick-start) page.
+- [Tutorials](https://developers.lseg.com/en/api-catalog/refinitiv-data-platform/refinitiv-data-platform-apis/tutorials) page.
+- [RDP APIs: Introduction to the Request-Response API](https://developers.lseg.com/en/api-catalog/refinitiv-data-platform/refinitiv-data-platform-apis/tutorials#introduction-to-the-request-response-api) page.
+- [RDP APIs: Authorization - All about tokens](https://developers.lseg.com/en/api-catalog/refinitiv-data-platform/refinitiv-data-platform-apis/tutorials#authorization-all-about-tokens) page.
+- [Changes to Customer Access and Identity Management: Version 2 Authentication](https://developers.lseg.com/en/article-catalog/article/changes-to-customer-access-and-identity-management--refinitiv-re) article.
 
 ### <a id="dotenv_python_setup"></a>python-dotenv and .env file set up
 
 You can install the python-dotenv library via the following pip command:
 
-```
+``` bash
 pip install python-dotenv
 ```
 
 Then create a ```.env``` file at the root of the project with the following content
 
-```
+``` ini
 # RDP Core Credentials
 RDP_USER=<Your RDP username>
 RDP_PASSWORD=<Your RDP password>
@@ -126,7 +127,7 @@ To use the python-dotenv library, you just import the library and call the ```lo
 
 Please note that the OS/system's environment variables always override ```.env``` configurations by default as the following example. 
 
-```
+``` python
 import os
 from dotenv import load_dotenv
 
@@ -137,7 +138,7 @@ print('User: ', os.getenv('USERNAME')) # Return your system USERNAME configurati
 
 The next example code shows how to use get configurations from a ```.env``` file to get the RDP APIs Auth service endpoint and user's RDP credentials. 
 
-```
+``` python
 # Get RDP Token service information from Environment Variables
 base_URL = os.getenv('RDP_BASE_URL')
 auth_endpoint = base_URL + os.getenv('RDP_AUTH_URL') 
@@ -150,7 +151,7 @@ app_key = os.getenv('RDP_APP_KEY')
 
 Next, the application creates the RDP Auth service request message and sends the HTTP Post request message to the RDP APIs endpoint based on configurations that we just loaded from the environment.
 
-```
+``` python
 import requests
 
 # -- Init and Authenticate Session
@@ -171,12 +172,11 @@ except Exception as exp:
 ...
 
 ```
-The next step is requesting ESG (Environmental, Social, and Governance) data from RDP. We use the ESG scores-full API endpoint which provides full coverage of Refinitiv's proprietary ESG Scores with full history for consumers as an example API.
+The next step is requesting ESG (Environmental, Social, and Governance) data from RDP. We use the ESG scores-full API endpoint which provides full coverage of LSEG's proprietary ESG Scores with full history for consumers as an example API.
 
 The RDP ESG Service API endpoint is also loaded from a ```.env``` file.
 
-
-```
+```python
 # Get RDP Token service information from Environment Variables
 esg_url = base_URL + os.getenv('RDP_ESG_URL') 
 
@@ -204,7 +204,7 @@ You may notice that the application gets the item name (aka universe) via a comm
 
 The python-dotenv library also supports the IPython environment such as the classic Jupyter Notebook and JupyterLab applications. The notebook application just needs to import the python-dotenv library and run the following IPython Magic statements. 
 
-```
+```python
 %load_ext dotenv
 
 # Use find_dotenv to locate the file
@@ -216,22 +216,21 @@ By default, it will use find_dotenv to search for a .env file in a current direc
 
 ## <a id="dotenv_java"></a>dotenv with Java
 
-The next section demonstrates the [dotenv-java](https://github.com/cdimascio/dotenv-java) library. The example Java console application uses the library to store the Refinitiv Real-Time - Optimized (RTO) credentials and configurations for the application.
+The next section demonstrates the [dotenv-java](https://github.com/cdimascio/dotenv-java) library. The example Java console application uses the library to store the Real-Time - Optimized (RTO) credentials and configurations for the application.
 
-### <a id="whatis_rto"></a>What is Refinitiv Real-Time - Optimized?
+### <a id="whatis_rto"></a>What is Real-Time - Optimized (RTO)?
 
-As part of the Refinitiv Data Platform, [Refinitiv Real-Time - Optimized](https://developers.refinitiv.com/en/api-catalog/elektron/refinitiv-websocket-api/quick-start#connecting-to-refinitiv-real-time-optimized) (formerly known as ERT in Cloud) gives you access to best in class Real-Time market data delivered in the cloud.  Refinitiv Real-Time - Optimized is a new delivery mechanism for RDP, using the AWS (Amazon Web Services) cloud. Once a connection to RDP is established using Refinitiv Real-Time - Optimized, data can be retrieved using [Websocket API for Pricing Streaming and Real-Time Services](https://developers.refinitiv.com/en/api-catalog/elektron/refinitiv-websocket-api) aka WebSocket API.
+As part of the Delivery Platform, the [Real-Time - Optimized (RTO)](https://developers.lseg.com/en/api-catalog/real-time-opnsrc/websocket-api/quick-start#connecting-to-the-real-time-optimized-with-authentication-version-2) (formerly known as ERT in Cloud) gives you access to best in class Real-Time market data delivered in the cloud. RTO is a new delivery mechanism for RDP, using the AWS (Amazon Web Services) cloud. Once a connection to RDP is established using RTO, data can be retrieved using [Websocket API for Pricing Streaming and Real-Time Services](https://developers.lseg.com/en/api-catalog/real-time-opnsrc/websocket-api) aka WebSocket API.
 
-For more detail regarding Refinitiv Real-Time - Optimized, please see the following APIs resources: 
-- [WebSocket API Quick Start](https://developers.refinitiv.com/en/api-catalog/refinitiv-real-time-opnsrc/refinitiv-websocket-api/quick-start#connecting-to-refinitiv-real-time-optimized) page.
-- [WebSocket API Tutorials](https://developers.refinitiv.com/en/api-catalog/refinitiv-real-time-opnsrc/refinitiv-websocket-api/tutorials#connect-to-refinitiv-real-time-optimized) page.
-- [How to Setup Refinitiv's Amazon EC2 Machine Image for Refinitiv Real-Time - Optimized](https://developers.refinitiv.com/en/article-catalog/article/how-to-setup-refinitiv-amazon-ec2-machine-image-for-elektron-r) article.
+For more detail regarding the Real-Time - Optimized, please see the following APIs resources: 
+- [WebSocket API Quick Start](https://developers.lseg.com/en/api-catalog/real-time-opnsrc/websocket-api/quick-start#connecting-to-the-real-time-optimized-with-authentication-version-2) page.
+- [WebSocket API Tutorials](https://developers.lseg.com/en/api-catalog/real-time-opnsrc/websocket-api/tutorials#connect-to-the-real-time-optimized-with-authentication-version-2) page.
 
 ### <a id="dotenv_java_setup"></a>dotenv-java and .env file set up
 
 You can install the dotenv-java library via the following Maven POM.xml file dependency configuration:
 
-```
+```xml
 <dependency>
     <groupId>io.github.cdimascio</groupId>
     <artifactId>dotenv-java</artifactId>
@@ -242,7 +241,7 @@ You can install the dotenv-java library via the following Maven POM.xml file dep
 
 Then create a ```.env``` file at the root of the project with the following content
 
-```
+```ini
 # RTO Core Credentials
 RTO_USER=<Your RTO Machine ID>
 RTO_PASSWORD=<Your RTO password>
@@ -263,7 +262,7 @@ To use the dotenv-java library, you just import the ```io.github.cdimascio.doten
 
 Please note that the OS/system's environment variables always override ```.env``` configurations by default as the following example. 
 
-```
+```java
 import io.github.cdimascio.dotenv.Dotenv;
 
 Dotenv dotenv = Dotenv.configure().ignoreIfMissing().ignoreIfMalformed().load();
@@ -275,7 +274,7 @@ Please note that you can create the Dotenv object via ```Dotenv.configure().load
 
 The next example code shows how to use get configurations from a ```.env``` file to get the RDP APIs Auth service endpoint, user's RTO credentials, and RTO port information. 
 
-```
+```java
 user = dotenv.get("RTO_USER");
 password = dotenv.get("RTO_PASSWORD");
 clientid = dotenv.get("RTO_APP_KEY");
@@ -298,12 +297,12 @@ Next, the application uses those configurations to authenticate with the RDP Aut
 
 Let's demonstrate with the Dockerfile first. You can use the ```ENV``` instruction to set the environment variable in the image. 
 
-```
+```docker
 ENV <key>=<value> ...
 ```
 You can set multiple environment variables in a single ```ENV``` instruction as well.
 
-```
+```docker
 ENV <key>=<value> \
     <key>=<value> \
     <key>=<value>
@@ -311,7 +310,7 @@ ENV <key>=<value> \
 
 The Dockerfile below set both the application and system's configurations in the Dockerfile. 
 
-```
+```docker
 # Update PATH environment variable + set Python buffer to make Docker print every message instantly.
 ENV PATH=/root/.local:$PATH \
     USERNAME=DOCKER_CONTAINER \
@@ -325,26 +324,26 @@ When you run the Docker containers from the above Docker image setting, the ```s
 
 You can use the ```--env``` (```-e``` for a shorter syntax) options with the Docker run command to set the environment variable of the container. The example with the Python RDP console container is the following:
 
-```
+```bash
 docker run --env <key>=<value> IMAGE
 ```
 
 Please note that if you want to set multiple environment variables, you need to set ```--env``` multiple times
 
-```
+```bash
 docker build . -t IMAGE
 ...
 docker run --env USERNAME=DOCKER_CONTAINER_RUN --env RDP_USER=USER1 --env RDP_PASSWORD=PASSWORD --env RDP_APP_KEY=APP_KEY IMAGE
 ```
 Alternatively, you can use the ```--env-file``` option to parse a file of environment variables (```.env``` file) to a Docker container. 
 
-```
+```bash
 docker run --env-file .env IMAGE
 ```
 
 Example for the Python RDP application:
 
-```
+```bash
 docker build . -t python_rdp
 ...
 docker run --env-file .env --name python_console python_rdp
@@ -352,7 +351,7 @@ docker run --env-file .env --name python_console python_rdp
 
 Example for the Java RTO WebSocket application:
 
-```
+```bash
 docker build . -t java_rto
 ...
 docker run --env-file .env --name java_websocket java_rto
@@ -373,7 +372,7 @@ This demo project requires the following dependencies software.
 5. [Apache Maven](https://maven.apache.org/) project management and comprehension tool.
 6. Internet connection.
 
-Please contact your Refinitiv's representative to help you to access the RDP, RTO account, and services. You can find more detail regarding the RDP and RTO access credentials set up from the [Getting Start with Refinitiv Data Platform article](https://developers.refinitiv.com/en/article-catalog/article/getting-start-with-refinitiv-data-platform) article: 
+Please contact your LSEG's representative to help you to access the RDP, RTO account, and services. You can find more detail regarding the RDP and RTO access credentials set up from the [Getting Start with Data Platform article](https://developers.lseg.com/en/article-catalog/article/getting-start-with-refinitiv-data-platform) article: 
 - RTO: Please see the *Getting Started for Machine ID* section.
 - RDP: Please see the *Getting Started for User ID* section.
 
@@ -452,15 +451,11 @@ The first step is to unzip or download the example project folder into a directo
     ```
     (base) $>conda activate python_dotenv_notebook
     ```
-4. Run the following command to the dependencies in the *python_dotenv_notebook* environment 
+4. Run the following command to the Notebook dependencies in the *python_dotenv_notebook* environment 
     ```
-    (python_dotenv_notebook) $>pip install -r requirements.txt
+    (python_dotenv_notebook) $>pip install -r requirements-notebook.txt
     ```
-5. Once the dependencies installation process success, install the Jupyter Lab application.
-    ```
-    (python_dotenv_notebook) $>conda install -c conda-forge jupyterlab
-    ```
-6. Once the  Jupyter Lab installation process success, Go to the project's Python folder. and create a file name ```.env``` with the following content. You can skip this step if you already did it in the Python Console section above.
+5. Once the  Jupyter Lab installation process success, Go to the project's Python folder. and create a file name ```.env``` with the following content. You can skip this step if you already did it in the Python Console section above.
     ```
     # RDP Core Credentials
     RDP_USER=<Your RDP User>
@@ -472,19 +467,19 @@ The first step is to unzip or download the example project folder into a directo
     RDP_AUTH_URL=/auth/oauth2/v1/token
     RDP_ESG_URL=/data/environmental-social-governance/v2/views/scores-full
     ```
-7. Then run the following command to start the Jupyter Lab application:
+6. Then run the following command to start the Jupyter Lab application:
     ```
     (python_dotenv_notebook) $>jupyter lab
     ```
     ![Figure-5](images/05_python_jupyterlab_1.gif "Notebook result") 
-8.  JupyterLab application will open the web browser and will go to the notebook home page, please open the *rdp_apis_notebook.ipynb* notebook file.
+7.  JupyterLab application will open the web browser and will go to the notebook home page, please open the *rdp_apis_notebook.ipynb* notebook file.
     ![Figure-6](images/06_jupyterlab.png "Notebook Open") 
 
 ### <a id="java_example_run"></a>How to Run a Java Console example
 
 If your environment does not have the Maven installed, please follow the [Maven installation guide page](https://maven.apache.org/install.html) for more detail.
 
-Please contact your Refinitiv's representative to help you to access the RTO account and services. You can find more detail regarding the Refinitiv Real-Time - Optimized Machine-ID user, and App Key from [Getting Start with Refinitiv Data Platform article](https://developers.refinitiv.com/en/article-catalog/article/getting-start-with-refinitiv-data-platform).
+Please contact your LSEG's representative to help you to access the RTO account and services. You can find more detail regarding the Real-Time - Optimized Machine-ID user, and App Key from [Getting Start with Delivery Platform article](https://developers.lseg.com/en/article-catalog/article/getting-start-with-refinitiv-data-platform).
 
 1. Open a command prompt and go to the project's Java folder
 2. Run the following Maven command to resolve dependencies, compile and build a jar file:
@@ -543,14 +538,17 @@ However, it is not recommended to deploy a ```.env``` file to the Production env
 Additionally, the Cloud service providers also provide secret storage services to store encryption credentials, configuration endpoints for the teams as well. The example secret storage services are [AWS systems Manager Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html), [Azure Key Vault](https://azure.microsoft.com/en-us/services/key-vault/), or [Google Cloud Secret Manager](https://cloud.google.com/secret-manager).
 
 ## <a id="references"></a>References
+
 For further details, please check out the following resources:
-* [Refinitiv Data Platform APIs page](https://developers.refinitiv.com/en/api-catalog/refinitiv-data-platform/refinitiv-data-platform-apis) on the [Refinitiv Developer Community](https://developers.refinitiv.com/) website.
-* [Refinitiv Data Platform APIs Playground page](https://api.refinitiv.com).
-* [Refinitiv Data Platform APIs: Introduction to the Request-Response API](https://developers.refinitiv.com/en/api-catalog/refinitiv-data-platform/refinitiv-data-platform-apis/tutorials#introduction-to-the-request-response-api).
-* [Refinitiv Data Platform APIs: Authorization - All about tokens](https://developers.refinitiv.com/en/api-catalog/refinitiv-data-platform/refinitiv-data-platform-apis/tutorials#authorization-all-about-tokens).
-* [WebSocket API for Pricing Streaming and Real-Time Services page](https://developers.refinitiv.com/en/api-catalog/refinitiv-real-time-opnsrc/refinitiv-websocket-api).
-* [WebSocket API Quick Start - Connecting to Refinitiv Real-Time - Optimized](https://developers.refinitiv.com/en/api-catalog/refinitiv-real-time-opnsrc/refinitiv-websocket-api/quick-start#connecting-to-refinitiv-real-time-optimized).
-* [WebSocket API Tutorial - Connecting to Refinitiv Real-Time - Optimized](https://developers.refinitiv.com/en/api-catalog/refinitiv-real-time-opnsrc/refinitiv-websocket-api/tutorials#connect-to-refinitiv-real-time-optimized).
+
+* [RDP APIs page](https://developers.lseg.com/en/api-catalog/refinitiv-data-platform/refinitiv-data-platform-apis) on the [LSEG Developer Community](https://developers.lseg.com/) website.
+* [RDP APIs Playground page](https://apidocs.refinitiv.com/Apps/ApiDocs).
+* [RDP APIs: Introduction to the Request-Response API](https://developers.lseg.com/en/api-catalog/refinitiv-data-platform/refinitiv-data-platform-apis/tutorials#introduction-to-the-request-response-api).
+* [RDP APIs: Authorization - All about tokens](https://developers.lseg.com/en/api-catalog/refinitiv-data-platform/refinitiv-data-platform-apis/tutorials#authorization-all-about-tokens).
+* [Changes to Customer Access and Identity Management: Version 2 Authentication](https://developers.lseg.com/en/article-catalog/article/changes-to-customer-access-and-identity-management--refinitiv-re) article.
+* [WebSocket API for Pricing Streaming and Real-Time Services page](https://developers.lseg.com/en/api-catalog/real-time-opnsrc/websocket-api).
+* [WebSocket API Quick Start - Connecting to Real-Time - Optimized](https://developers.lseg.com/en/api-catalog/real-time-opnsrc/websocket-api/quick-start#connecting-to-the-real-time-optimized-with-authentication-version-2).
+* [WebSocket API Tutorial - Connecting to Real-Time - Optimized](https://developers.lseg.com/en/api-catalog/real-time-opnsrc/websocket-api/tutorials#connect-to-the-real-time-optimized-with-authentication-version-2).
 * [python-dotenv GitHub page](https://github.com/theskumar/python-dotenv).
 * [dotenv-java GitHub page](https://github.com/cdimascio/dotenv-java).
 * [dotenv - Ruby GitHub page](https://github.com/bkeepers/dotenv).
@@ -560,6 +558,4 @@ For further details, please check out the following resources:
 * [Having trouble understanding the benefits and point of using an .env file - reddit](https://www.reddit.com/r/node/comments/6cz4jw/having_trouble_understanding_the_benefits_and/).
 
 
-For any questions related to Refinitiv Data Platform or WebSocket API/Refinitiv Real-Time - Optimized, please use the following forums on the [the Developers Community Q&A page](https://community.developers.refinitiv.com/).
-- [RDP APIs Forum](https://community.developers.refinitiv.com/spaces/231/index.html).
-- [WebSocket API/RTO Forum](https://community.developers.refinitiv.com/spaces/71/index.html).
+For any questions related to APIs on this project, please use the following forums on the [the Developers Community Q&A page](https://community.developers.refinitiv.com/).
