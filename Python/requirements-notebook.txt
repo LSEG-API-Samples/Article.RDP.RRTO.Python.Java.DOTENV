@@ -8,7 +8,7 @@ attrs==25.1.0
 babel==2.16.0
 beautifulsoup4==4.12.3
 bleach==6.4.0
-certifi==2024.12.14
+certifi==2026.10.19
 cffi==1.17.1
 charset-normalizer==3.4.1
 colorama==0.4.6
