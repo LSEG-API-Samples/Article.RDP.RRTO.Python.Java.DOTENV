@@ -1,6 +1,6 @@
 # How to separate your credentials, secrets, and configurations from your source code with environment variables
-- version: 2.0
-- Last update: January 2025
+- version: 2.5
+- Last update: November 2026
 - Environment: Windows
 - Prerequisite: [Access to RDP or RTO credentials](#prerequisite)
 
